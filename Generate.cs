@@ -27,12 +27,22 @@ public class Generate : ConditionBasedBehavior {
 	public override void OnConditionSatisfied()
 	{
 		Debug.Log("Generate::OnConditionSatisfied");
+		SetupGeneratedObject(GenerateObject(prefab));
+	}
+
+	public virtual GameObject GenerateObject(GameObject prefab)
+	{
 		GameObject generated = Instantiate(prefab) as GameObject;
+		return generated;
+	}
+
+	public virtual void SetupGeneratedObject(GameObject generated)
+	{
 		if (generationPosition == GenerationPosition.SamePosition)
 			generated.transform.position = transform.position;
 		else if (generationPosition == GenerationPosition.ObjectAsReference)
 			generated.transform.position = referencePosition.position;
-		//prefab.transform.parent = transform;
+		generated.transform.parent = transform;
 	}
 }
 
@@ -40,6 +50,17 @@ public class Generate : ConditionBasedBehavior {
 [CustomEditor(typeof(Generate))]
 public class GenerateEditor : ConditionBasedEditor {
 
+	public virtual void GenerateOnEditor()
+	{
+		Generate generate = target as Generate;
+
+		if (generate == null)
+		{
+			return;
+		}
+
+		generate.SetupGeneratedObject(generate.GenerateObject(generate.prefab));
+	}
 
 	public override void OnInspectorGUI()
 	{
@@ -69,7 +90,10 @@ public class GenerateEditor : ConditionBasedEditor {
 			generate.referencePosition = (Transform) EditorGUILayout.ObjectField("Reference object ", generate.referencePosition, typeof(Transform), true);
 		}
 		
-
+		if (GUILayout.Button("Generate"))
+		{
+			GenerateOnEditor();
+		}
 	}
 
 
