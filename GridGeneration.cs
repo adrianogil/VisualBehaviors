@@ -20,7 +20,7 @@ public class GridGeneration : Generate {
 
 	public override GameObject GenerateObject(GameObject prefab)
     {
-        Debug.Log("GridGeneration::GenerateObject");
+        // Debug.Log("GridGeneration::GenerateObject");
 
         GameObject grid = new GameObject("Grid");
 
